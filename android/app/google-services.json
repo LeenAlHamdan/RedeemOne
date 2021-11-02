@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "179167092120",
+    "firebase_url": "https://redeemone-b36f9-default-rtdb.firebaseio.com",
+    "project_id": "redeemone-b36f9",
+    "storage_bucket": "redeemone-b36f9.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:179167092120:android:81ccc1c51ca24c33f8dfed",
+        "android_client_info": {
+          "package_name": "com.leenalhamdan.redeem_one"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "179167092120-bd7bo5icnvi843j9t254613c0m0ddps7.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.leenalhamdan.redeem_one",
+            "certificate_hash": "ef4fc2925e8c797a05ce1d5b4328835a4ac6352a"
+          }
+        },
+        {
+          "client_id": "179167092120-dalvsh701rl7gf6d9lb4ksiadeanphsa.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC6akjFeet5GogCGRM5nq5obmUg6PAD2F0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "179167092120-dalvsh701rl7gf6d9lb4ksiadeanphsa.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
