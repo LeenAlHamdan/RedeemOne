@@ -5,8 +5,9 @@ import 'package:redeem_one/models/http_exception.dart';
 import 'package:redeem_one/models/user.dart';
 import 'package:redeem_one/providers/user_provider.dart';
 import 'package:redeem_one/screens/sign_in_screen.dart';
+import 'package:redeem_one/screens/user_screen.dart';
 
-import '../error_dialog.dart';
+import '../widgets/error_dialog.dart';
 
 // ignore: use_key_in_widget_constructors
 class SignUpScreen extends StatefulWidget {
@@ -111,7 +112,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     try {
       await Provider.of<UserProvider>(context, listen: false)
           .signInWithGoogle();
-      // Navigator.of(context).pushReplacementNamed(UserScreen.routeName);
+      Navigator.of(context).pushReplacementNamed(UserScreen.routeName);
     } on HttpException catch (error) {
       var errorMessage = 'Authentication failed';
       if (error.toString().contains('EMAIL_EXISTS')) {
@@ -142,7 +143,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(0),
         child: Container(
-          color: Theme.of(context).primaryColorDark,
+          color: Theme.of(context).backgroundColor,
         ),
       ),
       body: SafeArea(
@@ -152,10 +153,17 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    const CircularProgressIndicator(),
+                    CircularProgressIndicator(
+                      color: Theme.of(context).primaryColor,
+                    ),
                     Container(
                         margin: const EdgeInsets.only(left: 10),
-                        child: const Text("Loading...")),
+                        child: Text(
+                          "Loading...",
+                          style: TextStyle(
+                            color: Theme.of(context).primaryColor,
+                          ),
+                        )),
                   ],
                 ),
               )
@@ -163,17 +171,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 height: MediaQuery.of(context).size.height -
                     MediaQuery.of(context).padding.top -
                     MediaQuery.of(context).padding.bottom,
-                decoration: const BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [
-                      Color(0xFFB39DDB),
-                      Colors.black,
-                    ],
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    stops: [0, 1],
-                  ),
-                ),
+                color: Theme.of(context).backgroundColor,
                 child: SingleChildScrollView(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -213,12 +211,25 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         padding: const EdgeInsets.all(8),
                         margin: const EdgeInsets.all(10),
                         decoration: BoxDecoration(
-                          color: Theme.of(context).colorScheme.secondary,
+                          color: Theme.of(context).cardColor,
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: TextField(
-                          decoration:
-                              const InputDecoration(labelText: 'Full Name'),
+                          style: const TextStyle(color: Colors.white),
+                          decoration: InputDecoration(
+                            labelText: 'Full Name',
+                            labelStyle: const TextStyle(color: Colors.white),
+                            enabledBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Theme.of(context).primaryColor,
+                              ),
+                            ),
+                            focusedBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Theme.of(context).primaryColor,
+                              ),
+                            ),
+                          ),
                           controller: _fullNameController,
                           onSubmitted: (_) => FocusScope.of(context)
                               .requestFocus(_emailFocusNode),
@@ -230,11 +241,25 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         padding: const EdgeInsets.all(8),
                         margin: const EdgeInsets.all(10),
                         decoration: BoxDecoration(
-                          color: Theme.of(context).colorScheme.secondary,
+                          color: Theme.of(context).cardColor,
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: TextField(
-                          decoration: const InputDecoration(labelText: 'Email'),
+                          style: const TextStyle(color: Colors.white),
+                          decoration: InputDecoration(
+                            labelText: 'Email',
+                            labelStyle: const TextStyle(color: Colors.white),
+                            enabledBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Theme.of(context).primaryColor,
+                              ),
+                            ),
+                            focusedBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Theme.of(context).primaryColor,
+                              ),
+                            ),
+                          ),
                           controller: _emailController,
                           focusNode: _emailFocusNode,
                           onSubmitted: (_) => FocusScope.of(context)
@@ -247,12 +272,25 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         padding: const EdgeInsets.all(8),
                         margin: const EdgeInsets.all(10),
                         decoration: BoxDecoration(
-                          color: Theme.of(context).colorScheme.secondary,
+                          color: Theme.of(context).cardColor,
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: TextFormField(
-                          decoration:
-                              const InputDecoration(labelText: 'Password'),
+                          style: const TextStyle(color: Colors.white),
+                          decoration: InputDecoration(
+                            labelText: 'Password',
+                            labelStyle: const TextStyle(color: Colors.white),
+                            enabledBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Theme.of(context).primaryColor,
+                              ),
+                            ),
+                            focusedBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Theme.of(context).primaryColor,
+                              ),
+                            ),
+                          ),
                           obscureText: true,
                           controller: _passwordController,
                           focusNode: _passwordFocusNode,
@@ -271,12 +309,25 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         padding: const EdgeInsets.all(8),
                         margin: const EdgeInsets.all(10),
                         decoration: BoxDecoration(
-                          color: Theme.of(context).colorScheme.secondary,
+                          color: Theme.of(context).cardColor,
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: TextFormField(
-                          decoration: const InputDecoration(
-                              labelText: 'Confirm Password'),
+                          style: const TextStyle(color: Colors.white),
+                          decoration: InputDecoration(
+                            labelText: 'Confirm Password',
+                            labelStyle: const TextStyle(color: Colors.white),
+                            enabledBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Theme.of(context).primaryColor,
+                              ),
+                            ),
+                            focusedBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Theme.of(context).primaryColor,
+                              ),
+                            ),
+                          ),
                           obscureText: true,
                           focusNode: _confirmPasswordFocusNode,
                           controller: _confirmPasswordController,
@@ -348,8 +399,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               child: Text(
                                 ' Sign In',
                                 style: TextStyle(
-                                    color:
-                                        Theme.of(context).colorScheme.secondary,
+                                    color: Theme.of(context).primaryColor,
                                     fontSize: 18),
                               ),
                             ),

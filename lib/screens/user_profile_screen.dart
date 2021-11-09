@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:redeem_one/models/category.dart';
 
-import '../error_dialog.dart';
+import '../widgets/error_dialog.dart';
 import '../models/http_exception.dart';
 import '../models/page_item.dart';
 import '../providers/item_provider.dart';
@@ -57,6 +57,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
         child: Text(
           title,
           style: const TextStyle(
+            color: Colors.white,
             fontSize: 22,
             fontWeight: FontWeight.bold,
           ),
@@ -589,10 +590,17 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    const CircularProgressIndicator(),
+                    CircularProgressIndicator(
+                      color: Theme.of(context).primaryColor,
+                    ),
                     Container(
                         margin: const EdgeInsets.only(left: 10),
-                        child: const Text("Loading...")),
+                        child: Text(
+                          "Loading...",
+                          style: TextStyle(
+                            color: Theme.of(context).primaryColor,
+                          ),
+                        )),
                   ],
                 ),
               )
@@ -609,16 +617,16 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            const Icon(
-                              Icons.lightbulb_outline,
-                              size: 100,
+                            const Image(
+                              image: AssetImage('assets/images/logo.jpg'),
+                              height: 150,
                             ),
                             Consumer<UserProvider>(
                               builder: (_, userProvider, __) {
                                 return Text(
                                   userProvider.currentUser1.fullName,
                                   style: const TextStyle(
-                                    color: Colors.black,
+                                    color: Colors.white,
                                     fontSize: 24,
                                   ),
                                 );
@@ -630,6 +638,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                       //clicks on app
                       Card(
                         margin: const EdgeInsets.all(8),
+                        color: Theme.of(context).primaryColor.withOpacity(0.7),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -674,6 +683,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                       ),
                       Card(
                         margin: const EdgeInsets.all(8),
+                        color: Theme.of(context).primaryColor.withOpacity(0.7),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -716,7 +726,12 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
 
                       TextButton(
                         onPressed: () => Navigator.pop(context),
-                        child: const Text('Back To Home Page'),
+                        child: Text(
+                          'Back To Home Page',
+                          style: TextStyle(
+                            color: Theme.of(context).primaryColorDark,
+                          ),
+                        ),
                       ),
                     ],
                   ),

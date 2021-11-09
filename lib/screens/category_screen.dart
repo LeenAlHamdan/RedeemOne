@@ -29,20 +29,16 @@ class _CategoryScreenState extends State<CategoryScreen> {
                 MediaQuery.of(context).padding.top -
                 MediaQuery.of(context).padding.bottom -
                 AppBar().preferredSize.height,
-            child: Card(
-              color: Colors.grey[300],
-              elevation: 15,
-              child: Consumer<ItemProvider>(
-                builder: (_, itemProvider, __) {
-                  return CategoryItemGridView(
-                    title: widget.category.title,
-                    items: itemProvider.items
-                        .where((element) =>
-                            element.categoryId == widget.category.id)
-                        .toList(),
-                  );
-                },
-              ),
+            child: Consumer<ItemProvider>(
+              builder: (_, itemProvider, __) {
+                return CategoryItemGridView(
+                  title: widget.category.title,
+                  items: itemProvider.items
+                      .where(
+                          (element) => element.categoryId == widget.category.id)
+                      .toList(),
+                );
+              },
             ),
           ),
         ),

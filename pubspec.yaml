@@ -39,13 +39,10 @@ dependencies:
 
   http: ^0.13.4
   webview_flutter: ^2.0.14
-  #scroll_to_index: ^2.1.0
-  #scrollable_positioned_list: ^0.1.10-nullsafety.0
-  intl: ^0.17.0
-  #app_usage: ^2.0.0
   shared_preferences: ^2.0.8
   google_sign_in: ^5.1.1
   firebase_auth: ^3.1.4
+  flutter_linkify: ^5.0.2
 
 dev_dependencies:
   flutter_test:

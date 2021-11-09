@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:redeem_one/screens/add_new_page.dart';
 import 'package:redeem_one/screens/rest_password_screen.dart';
 
 import './providers/category_provider.dart';
@@ -51,6 +52,9 @@ class MyApp extends StatelessWidget {
     return stopwatch.elapsed.inSeconds;
   }
 
+  final pColor = const Color(0xFF355C7D);
+  final pColorDark = const Color(0xFF725A7A);
+
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
@@ -89,19 +93,19 @@ class MyApp extends StatelessWidget {
           title: 'RedeemOne',
           theme: ThemeData(
             fontFamily: 'Lato',
-            primaryColor: Colors.pink[100],
-            primaryColorDark: Colors.deepPurple[200],
-            scaffoldBackgroundColor: Colors.white,
+            backgroundColor: Colors.black,
+            primaryColor: pColor,
+            primaryColorDark: pColorDark,
+            scaffoldBackgroundColor: Colors.black,
             appBarTheme: AppBarTheme(
-              backgroundColor: Colors.deepPurple[300],
+              backgroundColor: pColorDark,
             ),
-            colorScheme:
-                ColorScheme.fromSwatch(primarySwatch: Colors.deepPurple)
-                    .copyWith(secondary: Colors.pink[50]),
+            cardColor: pColorDark.withOpacity(0.7),
           ),
           home: getHome(user),
           routes: {
             UserScreen.routeName: (ctx) => UserScreen(stopTimer),
+            AddNewPage.routeName: (ctx) => AddNewPage(),
             AddSiteScreen.routeName: (ctx) => AddSiteScreen(),
             UserProfileScreen.routeName: (ctx) => UserProfileScreen(stopTimer),
             SignInScreen.routeName: (ctx) => SignInScreen(),

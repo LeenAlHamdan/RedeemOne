@@ -16,13 +16,16 @@ class AddSiteScreen extends StatefulWidget {
 
 class _AddSiteScreenState extends State<AddSiteScreen> {
   final _linkFocusNode = FocusNode();
+  final _catFocusNode = FocusNode();
   final _imageUrlController = TextEditingController();
+  final _catController = TextEditingController();
   final _imageUrlFocusNode = FocusNode();
   final _form = GlobalKey<FormState>();
-  late String _dropdownValue;
+  String? _dropdownValue;
   List<Category> _spinnerItems = [];
 
   bool _isLoading = false;
+  bool newCat = false;
 
   late Item _editedItem = Item(
     id: '',
@@ -43,6 +46,9 @@ class _AddSiteScreenState extends State<AddSiteScreen> {
     _imageUrlFocusNode.removeListener(_updateImageUrl);
     _linkFocusNode.dispose();
     _imageUrlController.dispose();
+
+    _catController.dispose();
+    _catFocusNode.dispose();
     _imageUrlFocusNode.dispose();
     super.dispose();
   }
@@ -61,14 +67,18 @@ class _AddSiteScreenState extends State<AddSiteScreen> {
   }
 
   Future<void> _saveForm() async {
-    if (_editedItem.categoryId == '') {
-      _editedItem = Item(
-          id: _editedItem.id,
-          categoryId: _dropdownValue,
-          title: _editedItem.title,
-          logo: _editedItem.logo,
-          link: _editedItem.link);
+    if (_dropdownValue == null) {
+      ScaffoldMessenger.of(context).hideCurrentSnackBar();
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+            content: Text('Please Choose category'),
+            duration: Duration(seconds: 2)),
+      );
+      return;
     }
+    /*  if (_editedItem.categoryId == '') {
+    
+    } */
     final isValid = _form.currentState!.validate();
     if (!isValid) {
       return;
@@ -78,6 +88,17 @@ class _AddSiteScreenState extends State<AddSiteScreen> {
       _isLoading = true;
     });
     try {
+      if (_dropdownValue == '-1') {
+        final catId =
+            await Provider.of<CategoryProvider>(context, listen: false)
+                .addCategory(Category(id: '', title: _catController.text));
+        _editedItem = Item(
+            id: _editedItem.id,
+            categoryId: catId,
+            title: _editedItem.title,
+            logo: _editedItem.logo,
+            link: _editedItem.link);
+      }
       await Provider.of<ItemProvider>(context, listen: false)
           .addItem(_editedItem);
     } catch (error) {
@@ -122,10 +143,17 @@ class _AddSiteScreenState extends State<AddSiteScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  const CircularProgressIndicator(),
+                  CircularProgressIndicator(
+                    color: Theme.of(context).primaryColor,
+                  ),
                   Container(
                       margin: const EdgeInsets.only(left: 10),
-                      child: const Text("Loading...")),
+                      child: Text(
+                        "Loading...",
+                        style: TextStyle(
+                          color: Theme.of(context).primaryColor,
+                        ),
+                      )),
                 ],
               ),
             )
@@ -137,7 +165,21 @@ class _AddSiteScreenState extends State<AddSiteScreen> {
                   children: <Widget>[
                     //Title input
                     TextFormField(
-                      decoration: const InputDecoration(labelText: 'Title'),
+                      style: TextStyle(color: Colors.white),
+                      decoration: InputDecoration(
+                        enabledBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(
+                              width: 3, color: Theme.of(context).primaryColor),
+                        ),
+                        focusedBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(
+                              width: 3,
+                              color: Theme.of(context).primaryColorDark),
+                        ),
+                        labelText: 'Title',
+                        labelStyle: TextStyle(color: Colors.white),
+                      ),
+                      cursorColor: Theme.of(context).primaryColorDark,
                       textInputAction: TextInputAction.next,
                       onFieldSubmitted: (_) {
                         FocusScope.of(context).requestFocus(_linkFocusNode);
@@ -164,34 +206,51 @@ class _AddSiteScreenState extends State<AddSiteScreen> {
                       child: Consumer<CategoryProvider>(
                         builder: (_, catProvider, __) {
                           _spinnerItems = catProvider.categories;
-
+                          _spinnerItems.add(Category(id: '-1', title: 'Other'));
                           if (_spinnerItems.isEmpty) {
                             return Container();
                           } else {
-                            _dropdownValue = _spinnerItems[0].id;
+                            //     _dropdownValue = _spinnerItems[0].id;
                             return DropdownButton<String>(
                               isExpanded: true,
                               value: _dropdownValue,
-                              icon: Icon(Icons.arrow_drop_down),
+                              icon: Icon(
+                                Icons.arrow_drop_down,
+                                color: Theme.of(context).primaryColorDark,
+                              ),
                               iconSize: 24,
+                              hint: Text(
+                                'Category',
+                                style: TextStyle(color: Colors.white),
+                              ),
                               elevation: 16,
                               style:
-                                  TextStyle(color: Colors.black, fontSize: 18),
+                                  TextStyle(color: Colors.white, fontSize: 18),
                               underline: Container(
-                                height: 2,
-                                color: Colors.deepPurpleAccent,
+                                height: 3,
+                                color: Theme.of(context).primaryColor,
                               ),
                               onChanged: (data) {
-                                _editedItem = Item(
-                                  title: _editedItem.title,
-                                  link: _editedItem.link,
-                                  logo: _editedItem.logo,
-                                  id: _editedItem.id,
-                                  categoryId: _dropdownValue,
-                                );
                                 setState(() {
                                   _dropdownValue = data!;
                                 });
+                                if (_dropdownValue != '-1') {
+                                  _editedItem = Item(
+                                    title: _editedItem.title,
+                                    link: _editedItem.link,
+                                    logo: _editedItem.logo,
+                                    id: _editedItem.id,
+                                    categoryId: _dropdownValue!,
+                                  );
+                                  FocusScope.of(context)
+                                      .requestFocus(_linkFocusNode);
+                                } else {
+                                  setState(() {
+                                    newCat = true;
+                                  });
+                                  FocusScope.of(context)
+                                      .requestFocus(_catFocusNode);
+                                }
                               },
                               items: _spinnerItems
                                   .map<DropdownMenuItem<String>>((value) {
@@ -205,9 +264,59 @@ class _AddSiteScreenState extends State<AddSiteScreen> {
                         },
                       ),
                     ),
+                    Visibility(
+                      visible: newCat,
+                      child: TextFormField(
+                        style: TextStyle(color: Colors.white),
+                        cursorColor: Theme.of(context).primaryColorDark,
+                        decoration: InputDecoration(
+                          enabledBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(
+                                width: 3,
+                                color: Theme.of(context).primaryColor),
+                          ),
+                          focusedBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(
+                                width: 3,
+                                color: Theme.of(context).primaryColorDark),
+                          ),
+                          labelText: 'Category title',
+                          labelStyle: TextStyle(color: Colors.white),
+                        ),
+                        textInputAction: TextInputAction.next,
+                        controller: _catController,
+                        onFieldSubmitted: (_) {
+                          FocusScope.of(context).requestFocus(_linkFocusNode);
+                        },
+                        focusNode: _catFocusNode,
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return 'Please provide a value.';
+                          }
+                          return null;
+                        },
+                        onSaved: (value) {
+                          FocusScope.of(context).requestFocus(_linkFocusNode);
+                        },
+                      ),
+                    ),
                     //Link input
                     TextFormField(
-                      decoration: const InputDecoration(labelText: 'Link'),
+                      style: TextStyle(color: Colors.white),
+                      cursorColor: Theme.of(context).primaryColorDark,
+                      decoration: InputDecoration(
+                        enabledBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(
+                              width: 3, color: Theme.of(context).primaryColor),
+                        ),
+                        focusedBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(
+                              width: 3,
+                              color: Theme.of(context).primaryColorDark),
+                        ),
+                        labelText: 'Link',
+                        labelStyle: TextStyle(color: Colors.white),
+                      ),
                       keyboardType: TextInputType.url,
                       focusNode: _linkFocusNode,
                       validator: (value) {
@@ -244,7 +353,10 @@ class _AddSiteScreenState extends State<AddSiteScreen> {
                           ),
                           child: _imageUrlController.text.isEmpty
                               ? const Center(
-                                  child: Text('Enter a URL'),
+                                  child: Text(
+                                    'Enter a URL',
+                                    style: TextStyle(color: Colors.white),
+                                  ),
                                 )
                               : FittedBox(
                                   child: Image.network(
@@ -255,8 +367,22 @@ class _AddSiteScreenState extends State<AddSiteScreen> {
                         ),
                         Expanded(
                           child: TextFormField(
-                            decoration:
-                                const InputDecoration(labelText: 'Image URL'),
+                            style: TextStyle(color: Colors.white),
+                            cursorColor: Theme.of(context).primaryColorDark,
+                            decoration: InputDecoration(
+                              enabledBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: Theme.of(context).primaryColor,
+                                    width: 3),
+                              ),
+                              focusedBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: Theme.of(context).primaryColorDark,
+                                    width: 3),
+                              ),
+                              labelText: 'Image URL',
+                              labelStyle: TextStyle(color: Colors.white),
+                            ),
                             keyboardType: TextInputType.url,
                             textInputAction: TextInputAction.done,
                             controller: _imageUrlController,

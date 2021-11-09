@@ -1,8 +1,6 @@
-// ignore_for_file: prefer_final_fields, prefer_const_constructors, unnecessary_null_comparison
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
-import 'package:intl/intl.dart';
 
 import 'package:flutter/material.dart';
 import 'package:redeem_one/models/http_exception.dart';
@@ -113,7 +111,7 @@ class ItemProvider with ChangeNotifier {
         'https://redeemone-b36f9-default-rtdb.firebaseio.com/items.json');
     try {
       final response = await http.get(url);
-      final extractedData = json.decode(response.body) as Map<String, dynamic>;
+      final extractedData = json.decode(response.body) as Map<String, dynamic>?;
       if (extractedData == null) {
         return;
       }
@@ -139,7 +137,7 @@ class ItemProvider with ChangeNotifier {
     final date1 = DateTime.now()
         .subtract(Duration(
             hours: DateTime.now().hour, minutes: DateTime.now().minute))
-        .add(Duration(minutes: 1))
+        .add(const Duration(minutes: 1))
         .toIso8601String();
     try {
       for (var item in _items) {
@@ -252,7 +250,6 @@ class ItemProvider with ChangeNotifier {
             'Accept': 'application/json',
           });
 
-      print(response.body);
       if (response.statusCode >= 400) {
         throw HttpException('Error heppend!');
       }

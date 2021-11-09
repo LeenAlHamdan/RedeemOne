@@ -36,6 +36,8 @@ class PageItemProvider with ChangeNotifier {
       extractedData.forEach((itemId, item) {
         loadedData.add(PageItem(
           id: itemId,
+          link: item['link'],
+          image: item['image'],
           title: item['title'],
           content: item['content'],
         ));
@@ -55,13 +57,16 @@ class PageItemProvider with ChangeNotifier {
           body: json.encode({
             'title': item.title,
             'content': item.content,
+            'link': item.link ?? '',
+            'image': item.image ?? '',
           }));
 
       final newItem = PageItem(
-        id: json.decode(response.body)['name'],
-        title: item.title,
-        content: item.content,
-      );
+          id: json.decode(response.body)['name'],
+          title: item.title,
+          content: item.content,
+          link: item.link,
+          image: item.image);
       _items.add(newItem);
       notifyListeners();
     } catch (error) {
@@ -78,6 +83,8 @@ class PageItemProvider with ChangeNotifier {
           body: json.encode({
             'title': newItem.title,
             'content': newItem.content,
+            'link': newItem.link ?? '',
+            'image': newItem.image ?? '',
           }));
       if (response.statusCode >= 400) {
         throw Exception();

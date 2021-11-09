@@ -41,11 +41,11 @@ class CategoryProvider with ChangeNotifier {
       final List<Category> loadedData = [];
       extractedData.forEach((itemId, item) {
         loadedData.add(Category(
-            id: itemId,
-            title: item['title'],
-            key: GlobalKey<RefreshIndicatorState>()
-            //GlobalObjectKey(itemId),
-            ));
+          id: itemId,
+          title: item['title'],
+          //    key: GlobalKey<RefreshIndicatorState>()
+          //GlobalObjectKey(itemId),
+        ));
       });
       _categories = loadedData;
 
@@ -55,7 +55,7 @@ class CategoryProvider with ChangeNotifier {
     }
   }
 
-  Future<void> addCategory(Category category) async {
+  Future<String> addCategory(Category category) async {
     final url = Uri.parse(
         'https://redeemone-b36f9-default-rtdb.firebaseio.com/categories.json');
     try {
@@ -69,13 +69,14 @@ class CategoryProvider with ChangeNotifier {
         throw HttpException('Error heppend!');
       }
       final newCategory = Category(
-          id: json.decode(response.body)['name'],
-          title: category.title,
-          key: GlobalKey<RefreshIndicatorState>()
-          // GlobalObjectKey(json.decode(response.body)['name']),
-          );
+        id: json.decode(response.body)['name'],
+        title: category.title,
+        //   key: GlobalKey<RefreshIndicatorState>()
+        // GlobalObjectKey(json.decode(response.body)['name']),
+      );
       _categories.add(newCategory);
       notifyListeners();
+      return newCategory.id;
     } catch (error) {
       rethrow;
     }

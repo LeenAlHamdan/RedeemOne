@@ -3,7 +3,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:redeem_one/models/category.dart';
 import 'package:redeem_one/providers/category_provider.dart';
 import 'package:redeem_one/providers/page_item_provider.dart';
 import 'package:redeem_one/providers/user_provider.dart';
@@ -105,7 +104,7 @@ class NavigatorWidget extends StatelessWidget {
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 10, vertical: 10),
                             decoration: BoxDecoration(
-                              color: Colors.pink[100],
+                              color: Theme.of(context).cardColor,
                               borderRadius: BorderRadius.circular(10),
                             ),
                             child: Text(
@@ -145,7 +144,7 @@ class NavigatorWidget extends StatelessWidget {
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 10, vertical: 10),
                             decoration: BoxDecoration(
-                              color: Colors.pink[100],
+                              color: Theme.of(context).cardColor,
                               borderRadius: BorderRadius.circular(10),
                             ),
                             child: Text(
@@ -166,8 +165,12 @@ class NavigatorWidget extends StatelessWidget {
                 ? TextButton.icon(
                     onPressed: () => Navigator.of(context)
                         .pushNamed(AddSiteScreen.routeName),
-                    icon: const Icon(Icons.add),
-                    label: const Text('Add Site'),
+                    icon:
+                        Icon(Icons.add, color: Theme.of(context).primaryColor),
+                    label: Text(
+                      'Add Site',
+                      style: TextStyle(color: Theme.of(context).primaryColor),
+                    ),
                   )
                 : Container(),
             //logout section
@@ -180,7 +183,7 @@ class NavigatorWidget extends StatelessWidget {
                 await userProvider.setTodayHoures(val / 3600);
                 Navigator.of(context).pop();
                 Navigator.of(context).pop();
-                //        Navigator.of(context).pushReplacementNamed('/');
+                Navigator.of(context).pushReplacementNamed('/');
                 userProvider.signOut();
               },
               child: Container(

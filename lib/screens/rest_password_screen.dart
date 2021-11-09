@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:redeem_one/models/http_exception.dart';
 import 'package:redeem_one/providers/user_provider.dart';
 
-import '../error_dialog.dart';
+import '../widgets/error_dialog.dart';
 
 class RestPasswordScreen extends StatefulWidget {
   static const routeName = '/rest-password';
@@ -80,17 +80,7 @@ class _RestPasswordScreenState extends State<RestPasswordScreen> {
         child: Container(
           height: deviceSize.height,
           width: deviceSize.width,
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              colors: [
-                Color(0xFFB39DDB),
-                Colors.black,
-              ],
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              stops: [0, 1],
-            ),
-          ),
+          color: Theme.of(context).backgroundColor,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -120,7 +110,7 @@ class _RestPasswordScreenState extends State<RestPasswordScreen> {
                       const SizedBox(
                         width: 100,
                         child: Image(
-                          image: AssetImage('assets/images/logo.png'),
+                          image: AssetImage('assets/images/logo.jpg'),
                           fit: BoxFit.contain,
                         ),
                       ),
@@ -156,7 +146,7 @@ class _RestPasswordScreenState extends State<RestPasswordScreen> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             const Text(
-                              'You didn\'t recieve the code?',
+                              'You didn\'t recieve the email?',
                               style:
                                   TextStyle(color: Colors.white, fontSize: 20),
                             ),
@@ -183,7 +173,7 @@ class _RestPasswordScreenState extends State<RestPasswordScreen> {
                           const FittedBox(
                             fit: BoxFit.scaleDown,
                             child: Text(
-                              'A code will be sent to your email address',
+                              'A password reset link will be sent to your email address',
                               textAlign: TextAlign.start,
                               style:
                                   TextStyle(color: Colors.white, fontSize: 20),
@@ -194,7 +184,7 @@ class _RestPasswordScreenState extends State<RestPasswordScreen> {
                             margin: const EdgeInsets.symmetric(
                                 horizontal: 10, vertical: 20),
                             decoration: BoxDecoration(
-                              color: Theme.of(context).colorScheme.secondary,
+                              color: Theme.of(context).cardColor,
                               borderRadius: BorderRadius.circular(10),
                             ),
                             child: TextField(
@@ -210,7 +200,9 @@ class _RestPasswordScreenState extends State<RestPasswordScreen> {
                             height: 50,
                           ),
                           if (_isLoading)
-                            const CircularProgressIndicator()
+                            CircularProgressIndicator(
+                              color: Theme.of(context).primaryColor,
+                            )
                           else
                             Row(
                               children: [
@@ -269,7 +261,7 @@ class _RestPasswordScreenState extends State<RestPasswordScreen> {
                                         child: const FittedBox(
                                           fit: BoxFit.scaleDown,
                                           child: Text(
-                                            'Send verification code',
+                                            'Send verification email',
                                             textAlign: TextAlign.center,
                                             style: TextStyle(
                                               fontWeight: FontWeight.bold,

@@ -8,7 +8,7 @@ import 'package:redeem_one/providers/user_provider.dart';
 import 'package:redeem_one/screens/splash_screen.dart';
 import 'package:redeem_one/widgets/category_item_grid_view.dart';
 
-import '../error_dialog.dart';
+import '../widgets/error_dialog.dart';
 import '../models/page_item.dart';
 import '../providers/category_provider.dart';
 import '../providers/item_provider.dart';
@@ -53,28 +53,27 @@ class _UserScreenState extends State<UserScreen> {
       setState(() {
         _isLoading = true;
       });
-      try {
-        Future.delayed(Duration.zero).then((value) => {
-              Provider.of<PageItemProvider>(context, listen: false)
-                  .fetchAndSetPageItems(),
-              Provider.of<CategoryProvider>(context, listen: false)
-                  .fetchAndSetCategories(),
-              Provider.of<ItemProvider>(context, listen: false)
-                  .fetchAndSetItems()
-                  .then((_) {
-                setState(() {
-                  _isLoading = false;
-                });
-              }),
-            });
-      } on HttpException catch (_) {
-        const errorMessage = 'Something went wrong!.try again later';
-        showErrorDialog(errorMessage, context);
-      } catch (error) {
-        const errorMessage = 'Something went wrong!.try again later';
-        showErrorDialog(errorMessage, context);
-      }
+      Future.delayed(Duration.zero).then((value) async {
+        try {
+          await Provider.of<PageItemProvider>(context, listen: false)
+              .fetchAndSetPageItems();
+          await Provider.of<CategoryProvider>(context, listen: false)
+              .fetchAndSetCategories();
+          await Provider.of<ItemProvider>(context, listen: false)
+              .fetchAndSetItems();
+        } on HttpException catch (_) {
+          const errorMessage = 'Something went wrong!.try again later';
+          showErrorDialog(errorMessage, context);
+        } catch (error) {
+          const errorMessage = 'Something went wrong!.try again later';
+          showErrorDialog(errorMessage, context);
+        }
+        setState(() {
+          _isLoading = false;
+        });
+      });
     }
+
     _isInit = false;
 
     super.didChangeDependencies();
@@ -86,6 +85,8 @@ class _UserScreenState extends State<UserScreen> {
           .fetchAndSetCategories();
       await Provider.of<ItemProvider>(context, listen: false)
           .fetchAndSetItems();
+      await Provider.of<PageItemProvider>(context, listen: false)
+          .fetchAndSetPageItems();
       await Provider.of<ItemProvider>(context, listen: false).getTodayClicks();
     } on HttpException catch (_) {
       const errorMessage = 'Something went wrong!.try again later';
@@ -99,7 +100,6 @@ class _UserScreenState extends State<UserScreen> {
   @override
   Widget build(BuildContext context) {
     final userProv = Provider.of<UserProvider>(context);
-    final _isAdmin = userProv.isAdmin();
 
     /*   return Consumer<UserProvider>(
       builder: (_, user, __) {
@@ -119,16 +119,25 @@ class _UserScreenState extends State<UserScreen> {
         stopWatch: widget.stopTimer!,
       ),
       body: _isLoading
-          ? Center(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  const CircularProgressIndicator(),
-                  Container(
-                      margin: const EdgeInsets.only(left: 10),
-                      child: const Text("Loading...")),
-                ],
+          ? Container(
+              color: Theme.of(context).backgroundColor,
+              child: Center(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    CircularProgressIndicator(
+                      color: Theme.of(context).primaryColor,
+                    ),
+                    Container(
+                        margin: const EdgeInsets.only(left: 10),
+                        child: Text(
+                          "Loading...",
+                          style:
+                              TextStyle(color: Theme.of(context).primaryColor),
+                        )),
+                  ],
+                ),
               ),
             )
           : WillPopScope(
@@ -175,19 +184,19 @@ class _UserScreenState extends State<UserScreen> {
               },
               child: RefreshIndicator(
                 onRefresh: () => _refreshProducts(),
-                child: SafeArea(
-                  child: SingleChildScrollView(
-                    controller: _scrollController,
-                    child: Card(
-                      color: Colors.grey[300],
-                      elevation: 15,
+                child: Container(
+                  height: MediaQuery.of(context).size.height,
+                  color: Theme.of(context).backgroundColor,
+                  child: SafeArea(
+                    child: SingleChildScrollView(
+                      controller: _scrollController,
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           const Padding(
                             padding: EdgeInsets.all(8.0),
                             child: Image(
-                              image: AssetImage('assets/images/logo.png'),
+                              image: AssetImage('assets/images/logo.jpg'),
                               height: 150,
                               width: double.infinity,
                             ),
@@ -201,22 +210,19 @@ class _UserScreenState extends State<UserScreen> {
                                     children: catProvider.categories.map((e) {
                                       var index =
                                           catProvider.categories.indexOf(e);
-                                      return Container(
-                                        key: e.key,
-                                        child: Consumer<ItemProvider>(
-                                          builder: (_, itemProvider, __) {
-                                            return CategoryItemGridView(
-                                              title: catProvider
-                                                  .categories[index].title,
-                                              items: itemProvider.items
-                                                  .where((element) =>
-                                                      element.categoryId ==
-                                                      catProvider
-                                                          .categories[index].id)
-                                                  .toList(),
-                                            );
-                                          },
-                                        ),
+                                      return Consumer<ItemProvider>(
+                                        builder: (_, itemProvider, __) {
+                                          return CategoryItemGridView(
+                                            title: catProvider
+                                                .categories[index].title,
+                                            items: itemProvider.items
+                                                .where((element) =>
+                                                    element.categoryId ==
+                                                    catProvider
+                                                        .categories[index].id)
+                                                .toList(),
+                                          );
+                                        },
                                       );
                                     }).toList(),
                                   );

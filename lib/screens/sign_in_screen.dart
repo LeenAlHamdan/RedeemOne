@@ -9,7 +9,7 @@ import 'package:redeem_one/screens/rest_password_screen.dart';
 import 'package:redeem_one/screens/sign_up_screen.dart';
 import 'package:redeem_one/screens/user_screen.dart';
 
-import '../error_dialog.dart';
+import '../widgets/error_dialog.dart';
 
 class SignInScreen extends StatefulWidget {
   static const routeName = '/signIn';
@@ -98,6 +98,7 @@ class _SignInScreenState extends State<SignInScreen> {
     try {
       await Provider.of<UserProvider>(context, listen: false)
           .signInWithGoogle();
+      Navigator.of(context).pushReplacementNamed(UserScreen.routeName);
     } on HttpException catch (error) {
       var errorMessage = 'Authentication failed';
       if (error.toString().contains('EMAIL_EXISTS')) {
@@ -128,7 +129,7 @@ class _SignInScreenState extends State<SignInScreen> {
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(0),
         child: Container(
-          color: Theme.of(context).primaryColorDark,
+          color: Theme.of(context).backgroundColor,
         ),
       ),
       body: SafeArea(
@@ -138,28 +139,24 @@ class _SignInScreenState extends State<SignInScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    const CircularProgressIndicator(),
+                    CircularProgressIndicator(
+                      color: Theme.of(context).primaryColor,
+                    ),
                     Container(
                         margin: const EdgeInsets.only(left: 10),
-                        child: const Text("Loading...")),
+                        child: Text(
+                          "Loading...",
+                          style: TextStyle(
+                            color: Theme.of(context).primaryColor,
+                          ),
+                        )),
                   ],
                 ),
               )
-            : Container(
+            : SizedBox(
                 height: MediaQuery.of(context).size.height -
                     MediaQuery.of(context).padding.top -
                     MediaQuery.of(context).padding.bottom,
-                decoration: const BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [
-                      Color(0xFFB39DDB),
-                      Colors.black,
-                    ],
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    stops: [0, 1],
-                  ),
-                ),
                 child: SingleChildScrollView(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -187,11 +184,26 @@ class _SignInScreenState extends State<SignInScreen> {
                         padding: const EdgeInsets.all(8),
                         margin: const EdgeInsets.all(10),
                         decoration: BoxDecoration(
-                          color: Theme.of(context).colorScheme.secondary,
+                          color: Theme.of(context).cardColor,
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: TextField(
-                          decoration: const InputDecoration(labelText: 'email'),
+                          style: const TextStyle(color: Colors.white),
+                          cursorColor: Theme.of(context).primaryColor,
+                          decoration: InputDecoration(
+                            labelText: 'email',
+                            labelStyle: const TextStyle(color: Colors.white),
+                            enabledBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Theme.of(context).primaryColor,
+                              ),
+                            ),
+                            focusedBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Theme.of(context).primaryColor,
+                              ),
+                            ),
+                          ),
                           controller: _emailController,
                           keyboardType: TextInputType.emailAddress,
                           onSubmitted: (_) => FocusScope.of(context)
@@ -204,12 +216,25 @@ class _SignInScreenState extends State<SignInScreen> {
                         padding: const EdgeInsets.all(8),
                         margin: const EdgeInsets.all(10),
                         decoration: BoxDecoration(
-                          color: Theme.of(context).colorScheme.secondary,
+                          color: Theme.of(context).cardColor,
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: TextField(
-                          decoration:
-                              const InputDecoration(labelText: 'Password'),
+                          style: const TextStyle(color: Colors.white),
+                          decoration: InputDecoration(
+                            labelText: 'Password',
+                            labelStyle: const TextStyle(color: Colors.white),
+                            enabledBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Theme.of(context).primaryColor,
+                              ),
+                            ),
+                            focusedBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Theme.of(context).primaryColor,
+                              ),
+                            ),
+                          ),
                           obscureText: true,
                           controller: _passwordController,
                           focusNode: _passwordFocusNode,
@@ -240,7 +265,7 @@ class _SignInScreenState extends State<SignInScreen> {
                           child: const Text('Log In'),
                           style: ElevatedButton.styleFrom(
                             primary: Theme.of(context).primaryColor,
-                            onPrimary: Colors.black,
+                            onPrimary: Colors.white,
                             textStyle: const TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 18,
