@@ -59,7 +59,7 @@ class _AddNewPageState extends State<AddNewPage> {
       if (data != null) {
         _editedPage = data['page'] as PageItem;
         _titleController = TextEditingController(text: _editedPage!.title);
-        _hasLink = _editedPage!.link != null;
+        _hasLink = _editedPage!.link != null && _editedPage!.link != '';
         _linkController = TextEditingController(text: _editedPage!.link ?? '');
         _imageUrlController =
             TextEditingController(text: _editedPage!.image ?? '');
