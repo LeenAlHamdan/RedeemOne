@@ -53,10 +53,7 @@ class _PageScreenState extends State<PageScreen> {
       ),
       body: SingleChildScrollView(
         child: Container(
-          margin: const EdgeInsets.all(8),
-          padding: const EdgeInsets.all(8),
-          width: double.infinity,
-          height: MediaQuery.of(context).size.height - 100,
+          padding: const EdgeInsets.all(2),
           child: Card(
             margin: const EdgeInsets.all(8),
             elevation: 10,
@@ -93,7 +90,6 @@ class _PageScreenState extends State<PageScreen> {
                         ? Image.network(
                             pageItem.image!,
                             fit: BoxFit.cover,
-                            height: 150,
                             width: double.infinity,
                           )
                         : Container(),

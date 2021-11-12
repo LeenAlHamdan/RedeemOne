@@ -224,6 +224,7 @@ class _AddSiteScreenState extends State<AddSiteScreen> {
                                 style: TextStyle(color: Colors.white),
                               ),
                               elevation: 16,
+                              dropdownColor: Theme.of(context).backgroundColor,
                               style:
                                   TextStyle(color: Colors.white, fontSize: 18),
                               underline: Container(

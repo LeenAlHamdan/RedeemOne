@@ -208,12 +208,11 @@ class _AddNewPageState extends State<AddNewPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Add Page'),
+        title: Text(_isEdit ? 'Edit ${_editedPage!.title}' : 'Add Page'),
       ),
       body: SingleChildScrollView(
         child: _isLoading
             ? ConstrainedBox(
-                //forza il Center ad avere l'altezza dello scaffold body
                 constraints: BoxConstraints(
                   minHeight: MediaQuery.of(context).size.height - 100,
                 ),
@@ -285,221 +284,234 @@ class _AddNewPageState extends State<AddNewPage> {
                       borderRadius: BorderRadius.circular(10),
                     ),
                     height: MediaQuery.of(context).size.height - 300,
-                    child: Stack(
-                      children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          mainAxisSize: MainAxisSize.max,
-                          children: [
-                            TextFormField(
-                              minLines: 5,
-                              maxLines: 100,
-                              style: const TextStyle(color: Colors.white),
-                              cursorColor: Theme.of(context).primaryColor,
-                              decoration: InputDecoration(
-                                labelText: 'Content',
-                                alignLabelWithHint: true,
-                                labelStyle:
-                                    const TextStyle(color: Colors.white),
-                                enabledBorder: UnderlineInputBorder(
-                                  borderSide: BorderSide(
-                                    color: Theme.of(context).primaryColor,
-                                  ),
-                                ),
-                                focusedBorder: UnderlineInputBorder(
-                                  borderSide: BorderSide(
-                                    color: Theme.of(context).primaryColor,
-                                  ),
-                                ),
-                              ),
-                              controller: _contentController,
-                              keyboardType: TextInputType.multiline,
-                              validator: (value) {
-                                if (value!.isEmpty) {
-                                  return 'Please provide a value.';
-                                }
-                                return null;
-                              },
-                              focusNode: _contentFocusNode,
-                              onFieldSubmitted: (_) {
-                                if (_hasLink) {
-                                  FocusScope.of(context)
-                                      .requestFocus(_linkFocusNode);
-                                } else if (_hasImage) {
-                                  FocusScope.of(context)
-                                      .requestFocus(_imageUrlFocusNode);
-                                }
-                              },
-                              autofocus: true,
-                            ),
-                            Visibility(
-                              visible: _hasLink,
-                              child: TextFormField(
-                                style: const TextStyle(color: Colors.white),
-                                cursorColor: Theme.of(context).primaryColorDark,
-                                decoration: InputDecoration(
-                                  enabledBorder: UnderlineInputBorder(
-                                    borderSide: BorderSide(
-                                        width: 3,
-                                        color: Theme.of(context).primaryColor),
-                                  ),
-                                  focusedBorder: UnderlineInputBorder(
-                                    borderSide: BorderSide(
-                                        width: 3,
-                                        color:
-                                            Theme.of(context).primaryColorDark),
-                                  ),
-                                  labelText: 'hyperlink',
-                                  labelStyle:
-                                      const TextStyle(color: Colors.white),
-                                ),
-                                textInputAction: TextInputAction.next,
-                                controller: _linkController,
-                                onFieldSubmitted: (_) {
-                                  if (_hasImage) {
-                                    FocusScope.of(context)
-                                        .requestFocus(_imageUrlFocusNode);
-                                  }
-                                },
-                                focusNode: _linkFocusNode,
-                                validator: (value) {
-                                  if (value!.isEmpty) {
-                                    return 'Please provide a value.';
-                                  }
-                                  if (!value.startsWith('http') &&
-                                      !value.startsWith('https')) {
-                                    return 'Please enter a valid URL.';
-                                  }
-                                  return null;
-                                },
-                                onSaved: (value) {
-                                  FocusScope.of(context)
-                                      .requestFocus(_linkFocusNode);
-                                },
-                              ),
-                            ),
-                            _hasImage
-                                ? Visibility(
-                                    visible: _hasImage,
-                                    child: Row(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.end,
-                                      children: <Widget>[
-                                        Container(
-                                          width: 100,
-                                          height: 100,
-                                          margin: const EdgeInsets.only(
-                                            top: 8,
-                                            right: 10,
-                                          ),
-                                          decoration: BoxDecoration(
-                                            border: Border.all(
-                                              width: 1,
-                                              color: Colors.grey,
-                                            ),
-                                          ),
-                                          child: _imageUrlController
-                                                  .text.isEmpty
-                                              ? const Center(
-                                                  child: Text(
-                                                    'Enter a URL',
-                                                    style: TextStyle(
-                                                        color: Colors.white),
-                                                  ),
-                                                )
-                                              : FittedBox(
-                                                  child: Image.network(
-                                                    _imageUrlController.text,
-                                                    fit: BoxFit.cover,
-                                                  ),
-                                                ),
-                                        ),
-                                        Expanded(
-                                          child: TextFormField(
-                                            style: const TextStyle(
-                                                color: Colors.white),
-                                            cursorColor: Theme.of(context)
-                                                .primaryColorDark,
-                                            decoration: InputDecoration(
-                                              enabledBorder:
-                                                  UnderlineInputBorder(
-                                                borderSide: BorderSide(
-                                                    color: Theme.of(context)
-                                                        .primaryColor,
-                                                    width: 3),
-                                              ),
-                                              focusedBorder:
-                                                  UnderlineInputBorder(
-                                                borderSide: BorderSide(
-                                                    color: Theme.of(context)
-                                                        .primaryColorDark,
-                                                    width: 3),
-                                              ),
-                                              labelText: 'Image URL',
-                                              labelStyle: const TextStyle(
-                                                  color: Colors.white),
-                                            ),
-                                            keyboardType: TextInputType.url,
-                                            textInputAction:
-                                                TextInputAction.done,
-                                            controller: _imageUrlController,
-                                            focusNode: _imageUrlFocusNode,
-                                            onFieldSubmitted: (_) {
-                                              _updateImageUrl();
-                                            },
-                                            validator: (value) {
-                                              if (value!.isEmpty) {
-                                                return 'Please enter an image URL.';
-                                              }
-                                              if (!value.startsWith('http') &&
-                                                  !value.startsWith('https')) {
-                                                return 'Please enter a valid URL.';
-                                              }
-                                              if (!value.endsWith('.png') &&
-                                                  !value.endsWith('.jpg') &&
-                                                  !value.endsWith('.jpeg')) {
-                                                return 'Please enter a valid image URL.';
-                                              }
-                                              return null;
-                                            },
-                                          ),
-                                        ),
-                                      ],
+                    child: SingleChildScrollView(
+                      child: Stack(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(top: 12.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.max,
+                              children: [
+                                TextFormField(
+                                  minLines: 5,
+                                  maxLines: 1000,
+                                  style: const TextStyle(color: Colors.white),
+                                  cursorColor: Theme.of(context).primaryColor,
+                                  decoration: InputDecoration(
+                                    labelText: 'Content',
+                                    alignLabelWithHint: true,
+                                    labelStyle:
+                                        const TextStyle(color: Colors.white),
+                                    enabledBorder: UnderlineInputBorder(
+                                      borderSide: BorderSide(
+                                        color: Theme.of(context).primaryColor,
+                                      ),
                                     ),
-                                  )
-                                : (_isEdit &&
-                                        (_editedPage!.image != null &&
-                                            _editedPage!.image != ''))
-                                    ? GestureDetector(
-                                        onTap: () {
-                                          setState(() {
-                                            _hasImage = true;
-                                          });
-                                          FocusScope.of(context)
-                                              .requestFocus(_imageUrlFocusNode);
-                                        },
-                                        child: Image.network(
-                                          _editedPage!.image!,
-                                          fit: BoxFit.cover,
-                                          height: 150,
-                                          width: double.infinity,
+                                    focusedBorder: UnderlineInputBorder(
+                                      borderSide: BorderSide(
+                                        color: Theme.of(context).primaryColor,
+                                      ),
+                                    ),
+                                  ),
+                                  controller: _contentController,
+                                  keyboardType: TextInputType.multiline,
+                                  validator: (value) {
+                                    if (value!.isEmpty) {
+                                      return 'Please provide a value.';
+                                    }
+                                    return null;
+                                  },
+                                  focusNode: _contentFocusNode,
+                                  onFieldSubmitted: (_) {
+                                    if (_hasLink) {
+                                      FocusScope.of(context)
+                                          .requestFocus(_linkFocusNode);
+                                    } else if (_hasImage) {
+                                      FocusScope.of(context)
+                                          .requestFocus(_imageUrlFocusNode);
+                                    }
+                                  },
+                                  autofocus: true,
+                                ),
+                                Visibility(
+                                  visible: _hasLink,
+                                  child: TextFormField(
+                                    style: const TextStyle(color: Colors.white),
+                                    cursorColor:
+                                        Theme.of(context).primaryColorDark,
+                                    decoration: InputDecoration(
+                                      enabledBorder: UnderlineInputBorder(
+                                        borderSide: BorderSide(
+                                            width: 3,
+                                            color:
+                                                Theme.of(context).primaryColor),
+                                      ),
+                                      focusedBorder: UnderlineInputBorder(
+                                        borderSide: BorderSide(
+                                            width: 3,
+                                            color: Theme.of(context)
+                                                .primaryColorDark),
+                                      ),
+                                      labelText: 'hyperlink',
+                                      labelStyle:
+                                          const TextStyle(color: Colors.white),
+                                    ),
+                                    textInputAction: TextInputAction.next,
+                                    controller: _linkController,
+                                    onFieldSubmitted: (_) {
+                                      if (_hasImage) {
+                                        FocusScope.of(context)
+                                            .requestFocus(_imageUrlFocusNode);
+                                      }
+                                    },
+                                    focusNode: _linkFocusNode,
+                                    validator: (value) {
+                                      if (value!.isEmpty) {
+                                        return 'Please provide a value.';
+                                      }
+                                      if (!value.startsWith('http') &&
+                                          !value.startsWith('https')) {
+                                        return 'Please enter a valid URL.';
+                                      }
+                                      return null;
+                                    },
+                                    onSaved: (value) {
+                                      FocusScope.of(context)
+                                          .requestFocus(_linkFocusNode);
+                                    },
+                                  ),
+                                ),
+                                _hasImage
+                                    ? Visibility(
+                                        visible: _hasImage,
+                                        child: Row(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.end,
+                                          children: <Widget>[
+                                            Container(
+                                              width: 100,
+                                              height: 100,
+                                              margin: const EdgeInsets.only(
+                                                top: 8,
+                                                right: 10,
+                                              ),
+                                              decoration: BoxDecoration(
+                                                border: Border.all(
+                                                  width: 1,
+                                                  color: Colors.grey,
+                                                ),
+                                              ),
+                                              child: _imageUrlController
+                                                      .text.isEmpty
+                                                  ? const Center(
+                                                      child: Text(
+                                                        'Enter a URL',
+                                                        style: TextStyle(
+                                                            color:
+                                                                Colors.white),
+                                                      ),
+                                                    )
+                                                  : FittedBox(
+                                                      child: Image.network(
+                                                        _imageUrlController
+                                                            .text,
+                                                        fit: BoxFit.cover,
+                                                      ),
+                                                    ),
+                                            ),
+                                            Expanded(
+                                              child: TextFormField(
+                                                style: const TextStyle(
+                                                    color: Colors.white),
+                                                cursorColor: Theme.of(context)
+                                                    .primaryColorDark,
+                                                decoration: InputDecoration(
+                                                  enabledBorder:
+                                                      UnderlineInputBorder(
+                                                    borderSide: BorderSide(
+                                                        color: Theme.of(context)
+                                                            .primaryColor,
+                                                        width: 3),
+                                                  ),
+                                                  focusedBorder:
+                                                      UnderlineInputBorder(
+                                                    borderSide: BorderSide(
+                                                        color: Theme.of(context)
+                                                            .primaryColorDark,
+                                                        width: 3),
+                                                  ),
+                                                  labelText: 'Image URL',
+                                                  labelStyle: const TextStyle(
+                                                      color: Colors.white),
+                                                ),
+                                                keyboardType: TextInputType.url,
+                                                textInputAction:
+                                                    TextInputAction.done,
+                                                controller: _imageUrlController,
+                                                focusNode: _imageUrlFocusNode,
+                                                onFieldSubmitted: (_) {
+                                                  _updateImageUrl();
+                                                },
+                                                validator: (value) {
+                                                  if (value!.isEmpty) {
+                                                    return 'Please enter an image URL.';
+                                                  }
+                                                  if (!value
+                                                          .startsWith('http') &&
+                                                      !value.startsWith(
+                                                          'https')) {
+                                                    return 'Please enter a valid URL.';
+                                                  }
+                                                  if (!value.endsWith('.png') &&
+                                                      !value.endsWith('.jpg') &&
+                                                      !value
+                                                          .endsWith('.jpeg')) {
+                                                    return 'Please enter a valid image URL.';
+                                                  }
+                                                  return null;
+                                                },
+                                              ),
+                                            ),
+                                          ],
                                         ),
                                       )
-                                    : Container(),
-                          ],
-                        ),
-                        Positioned(
-                            top: 15,
-                            right: 5,
-                            child: IconButton(
-                              onPressed: () => _showPicker(context),
-                              icon: const Icon(
-                                Icons.attach_file,
-                                color: Colors.white,
-                              ),
-                            ))
-                      ],
+                                    : (_isEdit &&
+                                            (_editedPage!.image != null &&
+                                                _editedPage!.image != ''))
+                                        ? GestureDetector(
+                                            onTap: () {
+                                              setState(() {
+                                                _hasImage = true;
+                                              });
+                                              FocusScope.of(context)
+                                                  .requestFocus(
+                                                      _imageUrlFocusNode);
+                                            },
+                                            child: Image.network(
+                                              _editedPage!.image!,
+                                              fit: BoxFit.cover,
+                                              height: 150,
+                                              width: double.infinity,
+                                            ),
+                                          )
+                                        : Container(),
+                              ],
+                            ),
+                          ),
+                          Positioned(
+                              top: 0,
+                              right: 5,
+                              child: IconButton(
+                                onPressed: () => _showPicker(context),
+                                icon: const Icon(
+                                  Icons.attach_file,
+                                  color: Colors.white,
+                                ),
+                              ))
+                        ],
+                      ),
                     ),
                   ),
                   Padding(
